@@ -3,29 +3,27 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 
-public class Player extends Entity{
-
-    KeyHandler playerKey;
+public class Enemy extends Entity{
+    KeyHandler enemyKey;
     private int x, y, speed, width, height;
     private String movement;
 
-
-    public Player(){
-        getPlayerImage();
+    public Enemy(){
+        getEnemyImage();
         setDefaultValues();
-        playerKey = new KeyHandler();
+        enemyKey = new KeyHandler();
     }
     
-    public void getPlayerImage(){
+    public void getEnemyImage(){
         try{
-            player = ImageIO.read(getClass().getResourceAsStream("/resources/Asset9.png"));
+            enemy = ImageIO.read(getClass().getResourceAsStream("/resources/frog2.png"));
         }catch(IOException e){
 
         }
     }
 
     public void setDefaultValues(){
-        x = 100;
+        x = 200;
         y = 530;
         speed = 4;
         width = 40;
@@ -45,23 +43,23 @@ public class Player extends Entity{
     }
 
     public void update(){
-        if(playerKey.playerUp == true){
+        if(enemyKey.enemyUp == true){
             y-=speed;
             movement = "up";
-        }else if(playerKey.playerDown == true){
+        }else if(enemyKey.enemyDown == true){
             y+=speed;
             movement = "down";
-        }else if(playerKey.playerRight == true){
+        }else if(enemyKey.enemyRight == true){
             x+=speed;
             movement = "right";
-        }else if(playerKey.playerLeft == true){
+        }else if(enemyKey.enemyLeft == true){
             x-=speed;
             movement = "left";
         }
     }
 
     public void draw(Graphics2D g2d){
-        BufferedImage image = player;
+        BufferedImage image = enemy;
         g2d.drawImage(image, x, y, width, height, null);
     }
 
@@ -70,6 +68,4 @@ public class Player extends Entity{
         this.x >= platformBox.getX() + platformBox.getWidth() || this.y + this.height <= platformBox.getY() ||
         this.y >= platformBox.getY() + platformBox.getHeight());
     }
-
-    
 }
