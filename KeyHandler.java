@@ -16,30 +16,30 @@ public class KeyHandler implements KeyListener{
 
         if(pressed == KeyEvent.VK_UP){
             playerUp = true;
-            System.out.println("up");//for debugging
-        }else if(pressed == KeyEvent.VK_DOWN){
+            //for debugging
+        } if(pressed == KeyEvent.VK_DOWN){
             playerDown = true;
-            System.out.println("down");
-        }else if(pressed == KeyEvent.VK_RIGHT){
+           
+        } if(pressed == KeyEvent.VK_RIGHT){
             playerRight = true;
-            System.out.println("right");
-        }else if(pressed == KeyEvent.VK_LEFT){
+            
+        } if(pressed == KeyEvent.VK_LEFT){
             playerLeft = true;
-            System.out.println("left");
+           
         }
 
         if(pressed == KeyEvent.VK_W){
             enemyUp = true;
-            System.out.println("up");
-        }else if(pressed == KeyEvent.VK_S){
+            
+        } if(pressed == KeyEvent.VK_S){
             enemyDown = true;
-            System.out.println("down");
-        }else if(pressed == KeyEvent.VK_D){
+            
+        } if(pressed == KeyEvent.VK_D){
             enemyRight = true;
-            System.out.println("right");
-        }else if(pressed == KeyEvent.VK_A){
+           
+        } if(pressed == KeyEvent.VK_A){
             enemyLeft = true;
-            System.out.println("left");
+            
         }
     }
 
@@ -49,27 +49,27 @@ public class KeyHandler implements KeyListener{
 
         if(pressed == KeyEvent.VK_UP){
             playerUp = false;
-        }else if(pressed == KeyEvent.VK_DOWN){
+        } if(pressed == KeyEvent.VK_DOWN){
             playerDown = false;
-        }else if(pressed == KeyEvent.VK_RIGHT){
+        } if(pressed == KeyEvent.VK_RIGHT){
             playerRight = false;
-            System.out.println("right");
-        }else if(pressed == KeyEvent.VK_LEFT){
+
+        } if(pressed == KeyEvent.VK_LEFT){
             playerLeft = false;
-            System.out.println("left");
+
         }
         
         if(pressed == KeyEvent.VK_W){
             enemyUp = false;
-        }else if(pressed == KeyEvent.VK_S){
+        } if(pressed == KeyEvent.VK_S){
             enemyDown = false;
-            System.out.println("down");
-        }else if(pressed == KeyEvent.VK_D){
+
+        } if(pressed == KeyEvent.VK_D){
             enemyRight = false;
-            System.out.println("right");
-        }else if(pressed == KeyEvent.VK_A){
+
+        } if(pressed == KeyEvent.VK_A){
             enemyLeft = false;
-            System.out.println("left");
+
         }
     }
 }

@@ -7,6 +7,9 @@ public class Enemy extends Entity{
     KeyHandler enemyKey;
     private int x, y, speed, width, height;
     private String movement;
+    public int gravity = 3;
+    public boolean falling = false;
+    public boolean colliding;
 
     public Enemy(){
         getEnemyImage();
@@ -43,6 +46,9 @@ public class Enemy extends Entity{
     }
 
     public void update(){
+        if(falling){
+            y+=gravity;
+        }
         if(enemyKey.enemyUp == true){
             y-=speed;
             movement = "up";
@@ -64,8 +70,16 @@ public class Enemy extends Entity{
     }
 
     public boolean isColliding(Platforms platformBox){
-        return !(this.x + this.width <= platformBox.getX() || 
+        if (this.x + this.width <= platformBox.getX() || 
         this.x >= platformBox.getX() + platformBox.getWidth() || this.y + this.height <= platformBox.getY() ||
-        this.y >= platformBox.getY() + platformBox.getHeight());
+        this.y >= platformBox.getY() + platformBox.getHeight()){
+            falling = true;
+            colliding = false;
+            return colliding;
+        }else{
+            colliding = true;
+            falling = false;
+            return colliding;
+        }
     }
 }

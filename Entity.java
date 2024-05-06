@@ -11,5 +11,5 @@ public abstract class Entity {
 
     abstract void update();
 
-    abstract boolean isColliding(Platforms platformBox);
+    //abstract boolean isColliding(Platforms platformBox);
 }
