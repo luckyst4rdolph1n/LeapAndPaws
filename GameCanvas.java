@@ -11,6 +11,7 @@ public class GameCanvas extends JComponent implements Runnable{
     Background bg1;
     BaseGround baseGround;
     Platforms p1;
+    boolean running, jumping;
 
     private int FPS = 60;
 
@@ -23,12 +24,24 @@ public class GameCanvas extends JComponent implements Runnable{
         bg1 = new Background("/resources/grassland.png");
         baseGround = new BaseGround();
         p1 = new PlatformOne();
+        running = false;
 
     }
 
     public void startGameThread(){
+        running = true;
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    public void stopGameThread(){
+        running = false;
+        try{
+            gameThread.join();
+        }catch(InterruptedException e){
+
+        }
+        
     }
     
     @Override
@@ -37,7 +50,7 @@ public class GameCanvas extends JComponent implements Runnable{
         double drawInterval = 1000000000/FPS;
         double nextDraw = System.nanoTime() + drawInterval;
 
-        while(gameThread != null){
+        while(running){
             
             update();
 
@@ -61,11 +74,39 @@ public class GameCanvas extends JComponent implements Runnable{
     }
 
     public void update(){
-        if(player1.isColliding(baseGround) || player1.isColliding(p1)){
-            player1.colliding();
-        }else{
-            player1.update();
+        
+        //if(player1.jumping) player1.jump += player1.gravity;
+
+        if(player1.isColliding(baseGround)){
+            //player1.collides = true;
+            player1.jumping = false;
+            player1.jump-=player1.gravity;
         }
+        else if(player1.isColliding(p1)){
+            if(player1.isCollidingBot(p1)){
+                player1.collidingBot();
+            }
+            else if(player1.isCollidingSideL(p1)){
+                player1.collidingSideL();
+            }
+            else if(player1.isCollidingSideR(p1)){
+                player1.collidingSideR();
+            }
+            else if(player1.isCollidingTop(p1)){
+                player1.jumping = false;
+                player1.collidingTop();
+                System.out.println(player1.onTop);
+            }
+        }
+        else{
+            //player1.collides = false;
+            player1.jumping = true;
+            player1.jump+= player1.gravity;
+            player1.yFinalVel = player1.gravity + player1.jump;
+            player1.y += player1.jump;
+        }
+
+        player1.updateWithJump();
 
         if(enemy1.isColliding(baseGround) || enemy1.isColliding(p1)){
             enemy1.colliding();

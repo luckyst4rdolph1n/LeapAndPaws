@@ -9,7 +9,7 @@ public abstract class Entity {
 
     abstract void draw(Graphics2D g2d);
 
-    abstract void update();
+    //abstract void updateWithJump();
 
-    abstract boolean isColliding(Platforms platformBox);
+    //abstract boolean isColliding(Platforms platformBox);
 }
