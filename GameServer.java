@@ -16,14 +16,14 @@ public class GameServer{
         System.out.println("GAME SERVER!!!");
         numPlayers = 0;
         maxPlayers =2;
-        /*p1x= x start ng player 1
-         * p1y
-         * p2x
-         * p2y
-        */
+        p1x = 100;
+        p1y = 530;
+        p2x = 300;
+        p2y = 530;
+        
 
         try{
-            ss = new ServerSocket(40200); //not sure abt port number
+            ss = new ServerSocket(45371); //not sure abt port number
         } catch(IOException ex){
             System.out.println("IOException from GameServer constructor");
         }
@@ -40,13 +40,13 @@ public class GameServer{
 
                 numPlayers++;
                 out.writeInt(numPlayers);
-                System.out.println("Player #" + numPlayers + " has conneccted.");
+                System.out.println("Player #" + numPlayers + " has connected.");
 
                 ReadFromClient rfc = new ReadFromClient(numPlayers, in);
                 WriteToClient wtc = new WriteToClient(numPlayers, out);
 
                 if(numPlayers ==1){
-                    p1Socket = s;
+                    p1Socket =s;
                     p1ReadRunnable = rfc;
                     p1WriteRunnable = wtc;
                 } else{
@@ -59,13 +59,14 @@ public class GameServer{
                     Thread readThread2 = new Thread(p2ReadRunnable);
                     readThread1.start();
                     readThread2.start();
-                    Thread writeThread1 = new Thread(p1ReadRunnable);
-                    Thread writeThread2 = new Thread(p2ReadRunnable);
+                    Thread writeThread1 = new Thread(p1WriteRunnable);
+                    Thread writeThread2 = new Thread(p2WriteRunnable);
                     writeThread1.start();
                     writeThread2.start();
                 }
-                }
-                System.out.println("No longer accepting connections.");
+            }
+            System.out.println("No longer accepting connections.");
+            
             }catch(IOException ex){
                 System.out.println("IOException from acceptConnections()");
             }
@@ -123,7 +124,7 @@ public class GameServer{
                         dataOut.flush();
                     }
                     try {
-                        Thread.sleep(25);
+                        Thread.sleep(10);
                     } catch(InterruptedException ex){
                         System.out.println("InterruptedException from WTC run()");
                     }
