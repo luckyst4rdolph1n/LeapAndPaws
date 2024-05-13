@@ -14,6 +14,8 @@ public class GameFrame{
     public boolean up, enemyUp;
     private Socket socket;
     private int playerID;
+    private ReadFromServer rfsRunnable;
+    private WriteToServer wtsRunnable;
 
 public GameFrame(int w, int h){
     frame = new JFrame();
@@ -58,11 +60,69 @@ private void connectToServer(){
         if(playerID ==1){
             System.out.println("Waiting for Player #2 to connect...");
         }
+        rfsRunnable = new ReadFromServer(in);
+        wtsRunnable = new WriteToServer(out);
+        rfsRunnable.waitForStartMsg();
     }catch(IOException ex){
         System.out.println("IOException from connectToServer");
     }
 }
 
+private class ReadFromServer implements Runnable {
+    private DataInputStream dataIn;
+    public ReadFromServer(DataInputStream in){
+        dataIn = in;
+        System.out.println("RFS Runnable created");
+    }
+    public void run(){
+        try{
+            while(true){
+                //enemy.setX(dataIn.readDouble());
+                //enemy.setY(dataIn.readDouble());
+            }
+
+        }catch(IOException ex){
+            System.out.println("IOException from WTS run()")
+        }
+    }
+    public void waitForStartMsg(){
+        try{
+            String startMsg = dataIn.readUTF();
+            System.out.println("Message from server: "+startMsg);
+            Thread readThread = new Thread(rfsRunnable);
+            Thread writeThread = new Thread(wtsRunnable);
+            readThread.start();
+            writeThread.start();
+        }catch(IOException ex){
+            System.out.println("IOException from waitForStartMsg()");
+        }
+    }
+}
+
+private class WriteToServer implements Runnable {
+    private DataOutputStream dataOut;
+    public WriteToServer(DataOutputStream out){
+        dataOut = out;
+        System.out.println("WTS Runnable created");
+    }
+    public void run(){
+        try{
+            while (true){
+                dataOut.writeDouble(); //get ung x sa loob paren
+                dataOut.writeFloat(); //get yung y
+                dataOut.flush();
+                try{
+                    Thread.sleep(20);
+                } catch(InterruptedException er){
+                    System.out.println("InterruptedException from WTS run()");
+                }
+            }
+
+        }catch(IOException ex){
+            System.out.println("IOException from WTS run");
+        }
+    }
+}
 
 public static void main(String[] args) {
     GameFrame gf = new GameFrame(800, 600);
