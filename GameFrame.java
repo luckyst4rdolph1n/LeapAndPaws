@@ -12,7 +12,6 @@ public class GameFrame implements Runnable{
     private Socket socket;
     public int playerID;
     public Player player1, player2;
-    public Player dog, frog;
     public KeyHandler playerKey;
     Thread gameThread;
     private ReadFromServer rfsRunnable;
