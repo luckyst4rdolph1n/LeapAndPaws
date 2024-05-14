@@ -23,23 +23,48 @@ public class GameFrame implements Runnable{
     Platforms baseGround, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14;
     boolean running;
     public ArrayList<Platforms> platforms;
+    Breezy b1, b2, b3;
+    public ArrayList<Breezy> breezies;
+    public Flag flag;
+    Chocy c1, c2, c3;
+    public ArrayList<Chocy> chocies;
 
 public GameFrame(int w, int h){
     frame = new JFrame();
     createGameScene();
+    createPlayers();
     playerKey = new KeyHandler();
     
     w = width;
-    h = height;
-    //this.addKeyListener(playerHandler);
-    
+    h = height;   
+}
 
-    
+public void setUpGUI(){
+    frame.setSize(width, height);
+    frame.setTitle("Leap & Paws - Player # " + playerID);
+    gc = new GameCanvas(800, 600, player1, player2, bg1, platforms, breezies, chocies, flag);
+    frame.add(gc);
+    frame.pack();
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setVisible(true);
+    frame.addKeyListener(playerKey);
+    startGameThread();
+
+}
+
+public void createPlayers(){
+    if(playerID == 1){
+        player1 = new Player(100, 530, "/resources/Asset9.png");
+        player2 = new Player(300, 530, "/resources/frog2.png");
+    }else{
+        player2 = new Player(100, 530, "/resources/Asset9.png");
+        player1 = new Player(300, 530, "/resources/frog2.png");
+    }
 }
 
 public void connectToServer(){
     try{
-        socket = new Socket("localhost", 40200);
+        socket = new Socket("localhost", 45371);
         DataInputStream in = new DataInputStream(socket.getInputStream());
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
         playerID = in.readInt();
@@ -69,7 +94,7 @@ private class ReadFromServer implements Runnable {
             }
 
         }catch(IOException ex){
-            System.out.println("IOException from WTS run()");
+            System.out.println("IOException from RFS run()");
         }
     }
     public void waitForStartMsg(){
@@ -99,7 +124,7 @@ private class WriteToServer implements Runnable {
                 dataOut.writeDouble(player1.getY()); //get yung y
                 dataOut.flush();
                 try{
-                    Thread.sleep(20);
+                    Thread.sleep(10);
                 } catch(InterruptedException er){
                     System.out.println("InterruptedException from WTS run()");
                 }
@@ -108,39 +133,6 @@ private class WriteToServer implements Runnable {
         }catch(IOException ex){
             System.out.println("IOException from WTS run");
         }
-    }
-}
-
-public static void main(String[] args) {
-    GameFrame gf = new GameFrame(800, 600);
-    gf.connectToServer();
-    gf.setUpGUI();
-}
-//}
-
-
-public void setUpGUI(){
-    frame.setSize(width, height);
-    frame.setTitle("Leap & Paws - Player # " + playerID);
-    createPlayers();
-    gc = new GameCanvas(800, 600, player1, player2, bg1, platforms);
-    frame.add(gc);
-    frame.pack();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setVisible(true);
-    startGameThread();
-    frame.addKeyListener(playerKey);
-    //frame.addKeyListener(gc.enemy1.enemyKey);
-
-}
-
-private void createPlayers(){
-    if(playerID == 1){
-        player1 = new Player(100, 530, "/resources/Asset9.png");
-        player2 = new Player(300, 530, "/resources/frog2.png");
-    }else{
-        player1 = new Player(300, 530, "/resources/frog2.png");
-        player2 = new Player(100, 530, "/resources/Asset9.png");
     }
 }
 
@@ -164,6 +156,20 @@ private void createGameScene(){
         running = false;
         platforms = new ArrayList<Platforms>();
         addPlatforms();
+        
+        b1 = new Breezy(691, 331);
+        b2 = new Breezy(122, 322);
+        b3 = new Breezy(393, 154);
+        breezies = new ArrayList<Breezy>();
+        addBreezies();
+
+        c1 = new Chocy(414, 324);
+        c2 = new Chocy(580, 520);
+        c3 = new Chocy(217, 72);
+        chocies = new ArrayList<Chocy>();
+        addChocies();
+        
+        flag = new Flag();
 }
 
 public void addPlatforms(){
@@ -184,6 +190,18 @@ public void addPlatforms(){
     platforms.add(p14);
 }
 
+public void addBreezies(){
+    breezies.add(b1);
+    breezies.add(b2);
+    breezies.add(b3);
+}
+
+public void addChocies(){
+    chocies.add(c1);
+    chocies.add(c2);
+    chocies.add(c3);
+}
+
 public void startGameThread(){
     running = true;
     gameThread = new Thread(this);
@@ -202,10 +220,10 @@ public void stopGameThread(){
 
 
 
-public boolean checkCollision(Platforms p, Player player){
-    if(player.x + player.width <= p.getX() || 
-    player.x >= p.getX() + p.getWidth() || player.y + player.height <= p.getY() ||
-    player.y >= p.getY() + p.getHeight()){
+public boolean checkCollision(Entity e, Player player){
+    if(player.x + player.width <= e.getX() || 
+    player.x >= e.getX() + e.getWidth() || player.y + player.height <= e.getY() ||
+    player.y >= e.getY() + e.getHeight()){
         return false;
     }else{
         return true;
@@ -261,6 +279,68 @@ public boolean isOnPlatform(Player player, ArrayList<Platforms> pfs){
     }
 }
 
+public void atBorder(Player player){
+    if(player.x + player.width >= 800){
+        player.x = 800-player.width;
+    }if(player.x <= 0)
+        player.x = 0;
+}
+
+public void breezyCollisions(ArrayList<Breezy> br , Player player){
+    for(int i=0; i<br.size(); i++){
+        if(checkCollision(br.get(i), player)){
+            br.remove(i);
+            new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    player.speed += 10;
+                    System.out.println("works");
+                    try {
+                        Thread.sleep(3000); //after one second, barked will become false
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    player.speed -= 10;
+                    System.out.println("reached");
+
+                }
+            }).start();
+            
+        }else{
+            continue;
+        }
+    }
+}
+
+public void chocyCollisions(ArrayList<Chocy> cc , Player player){
+    for(int i=0; i<cc.size(); i++){
+        if(checkCollision(cc.get(i), player)){
+            cc.remove(i);
+            new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    player.speed -= 4;
+                    System.out.println("works");
+                    try {
+                        Thread.sleep(3000); //after one second, barked will become false
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    player.speed += 4;
+                    System.out.println("reached");
+
+                }
+            }).start();
+            
+        }else{
+            continue;
+        }
+    }
+}
 
 @Override
 public void run(){
@@ -293,8 +373,11 @@ public void run(){
 
 public void update(){
     actions();
+    atBorder(player1);
     platformCollisions(platforms, player1);
     platformCollisions(platforms, player2);
+    breezyCollisions(breezies, player1);
+    chocyCollisions(chocies, player1);
 
     /*if(enemy1.isColliding(baseGround) || enemy1.isColliding(p1)){
         enemy1.colliding();
@@ -315,5 +398,13 @@ public void actions(){
         player1.velx = -player1.speed;
     }
 }
+
+/*public static void main(String[] args) {
+    GameFrame gf = new GameFrame(800, 600);
+    gf.connectToServer();
+    gf.createPlayers();
+    gf.setUpGUI();
+}*/
+//}
 
 }

@@ -3,8 +3,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 
-public class Player extends Entity{
+public class Player{
 
+    public BufferedImage player;
     public double x, y, speed, width, height;
     public double velx, vely, jumpVel;
     public double gravity;

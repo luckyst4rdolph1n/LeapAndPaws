@@ -1,31 +1,33 @@
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.*;
 
-public class Platforms extends Entity{
+public class Flag extends Entity{
+    
+    BufferedImage flag;
+    double x, y, width, height;
 
-    public BufferedImage pf;
-    public String imgPath;
-    private double x, y, w, h;
+    public Flag(){
+        x = 745;
+        y = 56;
+        width = 26;
+        height = 27;
 
-    public Platforms(String imgPath, double x, double y, double w, double h){
-        this.imgPath = imgPath;
-        this.x = x;//0
-        this.y = y;//570;
-        this.w = w;//800;
-        this.h = h;//31;
-        setImages();
+        getPowerUpImage();
     }
 
-    public void setImages(){
+    public void getPowerUpImage(){
         try{
-            pf = ImageIO.read(getClass().getResourceAsStream(imgPath));
+            flag = ImageIO.read(getClass().getResourceAsStream("/resources/flag.png"));
         }catch(IOException e){
-           
 
         }
     }
+
+    /*public void addSpeed(double speedx){
+
+    }*/
 
     public double getX(){
         return x;
@@ -64,7 +66,7 @@ public class Platforms extends Entity{
     }
 
     public void draw(Graphics2D g2d){
-        BufferedImage img = pf;
-        g2d.drawImage(img, (int)x, (int)y, (int)w, (int)h, null);
+        BufferedImage image = flag;
+        g2d.drawImage(image, (int)x, (int)y, (int)width, (int)height, null);
     }
 }
